@@ -5,7 +5,7 @@ namespace Model;
 class JokeList implements Listable
 {
 	/* database connection */
-	private $pdo;
+	private $maphper;
 
 	/* sort method */
 	private $sort = 'oldest';
@@ -13,21 +13,21 @@ class JokeList implements Listable
 	/* search keywork if set */
 	private $keyword;
 
-	public function __construct(\PDO $pdo, string $sort = 'oldest', string $keyword = '')
+	public function __construct(\Maphper\Maphper $maphper, string $sort = 'oldest', string $keyword = '')
 	{
-		$this->pdo = $pdo;
+		$this->maphper = $maphper;
 		$this->sort = $sort;
 		$this->keyword = $keyword;
 	}
 
 	public function sort($dir): Listable
 	{
-		return new self($this->pdo, $dir, $this->keyword);
+		return new self($this->maphper, $dir, $this->keyword);
 	}
 
 	public function search($keyword): Listable
 	{
-		return new self($this->pdo, $this->sort, $keyword);
+		return new self($this->maphper, $this->sort, $keyword);
 	}
 
 	public function getKeyword(): string
@@ -42,39 +42,25 @@ class JokeList implements Listable
 
 	public function delete($id): Listable
 	{
-		$stmt = $this->pdo->prepare('DELETE FROM joke WHERE id = :id');
-		$stmt->execute(['id' => $id]);
-
+		unset($this->maphper[$id]);
 		return $this;
 	}
 
-	public function list(): array
+	public function get(): \Maphper\Maphper
 	{
-		$parameters = [];
+		$jokes = $this->maphper;
 
 		if ($this->sort == 'newest') {
-			$order = ' ORDER BY id DESC';
+			$jokes = $jokes->sort('id asc');
 		}
 		else if ($this->sort == 'oldest') {
-			$order = ' ORDER BY id ASC';
+			$jokes = $jokes->sort('id desc');
 		}
-		else {
-			$order = '';
-		}
-
 
 		if ($this->keyword) {
-			$where = ' WHERE text LIKE :text';
-			$parameters['text'] = '%' . $this->keyword . '%';
-		}
-		else {
-			$where = '';
+			$jokes = $jokes->filter([\Maphper\Maphper::FIND_LIKE => ['text' => $this->keyword]]);
 		}
 
-
-		$stmt = $this->pdo->prepare('SELECT * FROM joke ' . $where . $order);
-		$stmt->execute($parameters);
-
-		return $stmt->fetchAll();
+		return $jokes;
 	}
 }

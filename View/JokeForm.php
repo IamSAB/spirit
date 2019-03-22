@@ -27,8 +27,8 @@ class JokeForm
 		}
 
 		$output .= '<form action="" method="post">
-				<input type="hidden" value="' . ($joke['id'] ?? ''). '" name="joke[id]" />
-				<textarea name="joke[text]">' . ($joke['text'] ?? '') . '</textarea>
+				<input type="hidden" value="' . ($joke['id'] ?? ''). '" name="data[id]" />
+				<textarea name="data[text]">' . ($joke['text'] ?? '') . '</textarea>
 				<input type="submit" value="submit" />
 			</form>';
 

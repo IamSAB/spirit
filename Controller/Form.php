@@ -19,6 +19,6 @@ class Form
 
     public function submit(Editable $list): Editable
     {
-        return $list->save($_POST['joke']);
+        return $list->save($_POST['data']);
     }
 }

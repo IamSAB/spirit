@@ -14,5 +14,5 @@ interface Listable
 
 	public function delete($id): self;
 
-	public function list(): array;
+	public function get(): \Maphper\Maphper;
 }

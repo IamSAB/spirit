@@ -4,7 +4,7 @@ namespace Model;
 
 class JokeForm implements Editable
 {
-	private $pdo;
+	private $maphper;
 
 	/* $submitted: Whether or not the form has been submitted */
 	private $submitted = false;
@@ -15,9 +15,9 @@ class JokeForm implements Editable
 	/* The record being represented. May come from the database or a form submission */
 	private $record = [];
 
-	public function __construct(\PDO $pdo, $submitted = false, array $record = [], array $errors = [])
+	public function __construct(\Maphper\Maphper $maphper, $submitted = false, array $record = [], array $errors = [])
 	{
-		$this->pdo = $pdo;
+		$this->maphper = $maphper;
 		$this->record = $record;
 		$this->submitted = $submitted;
 		$this->errors = $errors;
@@ -29,10 +29,7 @@ class JokeForm implements Editable
 	*/
 	public function load(int $id): Editable
 	{
-		$stmt = $this->pdo->prepare('SELECT * FROM joke WHERE id = :id');
-		$stmt->execute(['id' => $id]);
-		$record = $stmt->fetch();
-		return new self($this->pdo, $this->submitted, $record);
+		return new self($this->maphper, $this->submitted, (array) $this->maphper[$id]);
 	}
 
 	/*
@@ -73,15 +70,12 @@ class JokeForm implements Editable
 			// Return a new instance with $record set to the form submission
 			// When the view displays the joke, it will display the invalid
 			// form submission back in the box
-			return new self($this->pdo, true, $record, $errors);
+			return new self($this->maphper, true, $record, $errors);
 		}
 
-		if (!empty($record['id'])) {
-			return $this->update($record);
-		}
-		else {
-			return $this->insert($record);
-		}
+		$this->maphper[] = (object) $record;
+
+		return new self($this->maphper, true, $record);
 	}
 
 	/*
@@ -96,30 +90,5 @@ class JokeForm implements Editable
 		}
 
 		return $errors;
-	}
-
-	/*
-	* @description save the record using an UPDATE query
-	*/
-	private function update(array $record): self
-	{
-		$stmt = $this->pdo->prepare('UPDATE joke SET text = :text WHERE id = :id');
-		$stmt->execute($record);
-
-		return new self($this->pdo, true, $record);
-	}
-
-	/*
-	* @description save the record using an INSERT query
-	*/
-	private function insert(array $record): self
-	{
-		$stmt = $this->pdo->prepare('INSERT INTO joke (text) VALUES(:text)');
-
-		$stmt->execute(['text' => $record['text']]);
-
-		$record['id'] = $this->pdo->lastInsertId();
-
-		return new self($this->pdo, true, $record);
 	}
 }

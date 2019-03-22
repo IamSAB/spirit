@@ -1,0 +1,16 @@
+{
+    "name": "sab/spirit",
+    "description": "A simple MVC framework",
+    "type": "project",
+    "minimum-stability": "dev",
+    "require": {
+        "level-2/maphper": "^0.9.2",
+        "level-2/axel": "^1.0"
+    },
+    "authors": [
+        {
+            "name": "Simon Bösch",
+            "email": "simon-andreas.boesch@hotmail.com"
+        }
+    ]
+}
