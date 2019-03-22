@@ -1,6 +1,6 @@
 # spirit
 
-A simple MVC framework
+Learning how to write a simple php MVC framework using some level-2 components :D
 
 ## run
 
@@ -15,3 +15,9 @@ Credits go to Tom Butler as this project build on his bare-bones example of an I
 
 - https://github.com/TRPB/ImmutableMVC
 - https://r.je/immutable-mvc-crud-application.html
+
+## on my mind
+
+- Transphporm https://github.com/Level-2/Transphporm
+- Dice if needed https://github.com/Level-2/Dice
+- user authentication and authorization
