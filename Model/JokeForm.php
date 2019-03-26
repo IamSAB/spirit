@@ -49,6 +49,16 @@ class JokeForm implements Editable
 		return $this->submitted;
 	}
 
+	public function successfullSubmitted(): bool
+	{
+		return $this->isSubmitted() && !$this->hasErrors();
+	}
+
+	public function hasErrors(): bool
+	{
+		return !empty($this->errors);
+	}
+
 	/*
 	* @description return a list of validation errors in the current $record
 	*/

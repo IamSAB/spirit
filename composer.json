@@ -5,7 +5,9 @@
     "minimum-stability": "dev",
     "require": {
         "level-2/maphper": "^0.9.2",
-        "level-2/axel": "^1.0"
+        "level-2/axel": "^1.0",
+        "level-2/transphporm": "dev-master",
+        "level-2/simplecache": "dev-master"
     },
     "authors": [
         {

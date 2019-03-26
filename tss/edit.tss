@@ -1,0 +1,13 @@
+// use
+main { content: template("../html/edit.html") }
+
+// redirect
+html:data[successfullSubmitted()=true]:header[location] {content: "index.php"}
+
+// errors
+#errors:data[hasErrors()=false] {display: none}
+#errors ul li {repeat: data(getErrors()); content: iteration();}
+
+// form
+form input[name="data[id]"]::attr(value) { content: data(get().id) }
+form textarea { content: data(get().text) }

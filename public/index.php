@@ -7,11 +7,14 @@ $pdo = new \Pdo('sqlite:spirit.db', DB_USER, DB_PASS, [PDO::ATTR_ERRMODE => PDO:
 
 $route = $_GET['route'] ?? '';
 
+// $url = ltrim(strtok($_SERVER["REQUEST_URI"],'?'), '/');
+// $parts = explode('/', $url);
+
 $jokes = new \Maphper\Maphper(new \Maphper\DataSource\Database($pdo, 'joke', 'id', ['editmode' => true]));
 
 if ($route == '') {
 	$model = new \Model\JokeList($jokes);
-	$view = new \View\JokeList();
+	$view = new \Transphporm\Builder('../html/layout.html', '../tss/list.tss');
 }
 else if ($route == 'edit') {
 	$model = new \Model\JokeForm($jokes);
@@ -23,21 +26,18 @@ else if ($route == 'edit') {
 		$model = $controller->submit($model);
 	}
 
-	$view = new \View\JokeForm();
+	$view = new \Transphporm\Builder('../html/layout.html', '../tss/edit.tss');
 }
 else if ($route == 'delete') {
 	$model = new \Model\JokeList($jokes);
 	$controller = new \Controller\Listing();
-
 	$model = $controller->delete($model);
-
-	$view = new \View\JokeList();
+	$view = new \Transphporm\Builder('../html/layout.html', '../tss/list.tss');
 }
 else if ($route == 'filterList') {
 	$model = new \Model\JokeList($jokes);
-	$view = new \View\JokeList();
+	$view = new \Transphporm\Builder('../html/layout.html', '../tss/list.tss');
 	$controller = new \Controller\Listing();
-
 	$model = $controller->filterList($model);
 }
 else {
@@ -45,4 +45,11 @@ else {
 	echo 'Page not found (Invalid route)';
 }
 
-echo $view->output($model);
+$output = $view->output($model);
+
+foreach ($output->headers as $header) {
+	if ($header[0] === 'status') http_response_code($header[1]);
+	else header($header[0] . ': ' . $header[1]);
+}
+
+echo $output->body;

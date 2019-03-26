@@ -1,0 +1,20 @@
+// use
+main { content: template("../html/list.html") }
+
+// add
+#add a:attr(href) { content: "index.php?route=edit" }
+
+// filter
+input[name="route"]::attr(value) { content: "filterList" }
+input[name="sort"]::attr(value) { content: data(getSort()) }
+input[name="search"]::attr(value) { content: data(getKeyword()) }
+
+// table
+// head
+thead th:nth-child(1) { content: "Joke" }
+// body
+tbody tr {repeat: data(get()) }
+tbody tr td:nth-child(1) { content: iteration(text) }
+tbody tr td input[name="id"]::attr(value) { content: iteration(id) }
+tbody tr td a::attr(href) { content: "index.php?route=edit&id=",iteration(id) }
+tbody tr td form::attr(action) { content: "index.php?route=delete"}
